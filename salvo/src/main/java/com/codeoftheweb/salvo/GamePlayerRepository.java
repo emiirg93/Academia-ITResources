@@ -1,9 +1,9 @@
-package com.codeoftheweb.salvo.repository;
+package com.codeoftheweb.salvo;
 
-import com.codeoftheweb.salvo.model.Game;
+import com.codeoftheweb.salvo.GamePlayer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface GameRepository extends JpaRepository<Game,Long> {
+public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long> {
 }

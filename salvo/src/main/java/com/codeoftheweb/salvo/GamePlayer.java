@@ -1,30 +1,33 @@
-package com.codeoftheweb.salvo.model;
+package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
+    private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game_id")
+    @JoinColumn(name = "game_id")
     private Game game;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_id")
+    @JoinColumn(name = "player_id")
     private Player player;
 
     private LocalDateTime joinDate;
 
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    private Set<Ship> ships;
+
     public GamePlayer() {
+
     }
 
     public GamePlayer(Game game, Player player, LocalDateTime joinDate) {
@@ -33,11 +36,11 @@ public class GamePlayer {
         this.joinDate = joinDate;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -65,13 +68,18 @@ public class GamePlayer {
         this.joinDate = joinDate;
     }
 
-    public Map<String,Object> MakeGamePlayerDTO(){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id",this.getId());
-        dto.put("player",this.getPlayer().makePlayerDTO());
-
-        return dto;
+    public Set<Ship> getShips() {
+        return ships;
     }
 
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
 
+    public Map<String, Object> makeGamePlayerDTO() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", this.getId());
+        map.put("player", this.player.makePlayerDTO());
+        return map;
+    }
 }
