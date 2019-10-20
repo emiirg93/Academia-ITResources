@@ -1,4 +1,4 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 public class Player {
@@ -38,6 +40,14 @@ public class Player {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Map<String,Object> makePlayerDTO(){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id",this.getId());
+        dto.put("email",this.getEmail());
+
+        return dto;
     }
 
 }
