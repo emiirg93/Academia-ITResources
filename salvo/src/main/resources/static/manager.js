@@ -36,7 +36,7 @@ $(function() {
       },
       dataType: "text",
       url: "/players",
-      data: JSON.stringify({ "userName": userName })
+      data: JSON.stringify({ "email": userName })
     })
     .done(function( ) {
       showOutput( "Saved -- reloading");
