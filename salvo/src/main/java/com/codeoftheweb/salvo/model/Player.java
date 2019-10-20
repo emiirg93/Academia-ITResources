@@ -2,12 +2,10 @@ package com.codeoftheweb.salvo.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 public class Player {
@@ -18,6 +16,9 @@ public class Player {
     private long id;
 
     private String email;
+
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<GamePlayer> setGamePlayer;
 
     public Player() {
     }
@@ -40,6 +41,14 @@ public class Player {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<GamePlayer> getSetGamePlayer() {
+        return setGamePlayer;
+    }
+
+    public void setSetGamePlayer(Set<GamePlayer> setGamePlayer) {
+        this.setGamePlayer = setGamePlayer;
     }
 
     public Map<String,Object> makePlayerDTO(){
