@@ -30,14 +30,15 @@ public class SalvoController {
         return gameRepository.findAll().stream().map(game -> game.MakeGameDTO()).collect(Collectors.toList());
     }
 
-    @RequestMapping("/game_view/{id}")
-    public Map<String,Object> getGameView(@PathVariable Long id){
+    @RequestMapping("/game_view/{gp}")
+    public Map<String,Object> getGameView(@PathVariable Long gp){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        GamePlayer gp = gamePlayerRepository.findById(id).get();
-        dto.put("id",gp.getGame().getId());
-        dto.put("created",gp.getGame().getCreationDate());
-        dto.put("gamePlayers",gp.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
-        dto.put("ships",gp.getShips().stream().map(ship -> ship.MakeShipDTO()).collect(Collectors.toList()));
+        GamePlayer gpr = gamePlayerRepository.findById(gp).get();
+        dto.put("id",gpr.getGame().getId());
+        dto.put("created",gpr.getGame().getCreationDate());
+        dto.put("gamePlayers",gpr.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
+        dto.put("ships",gpr.getShips().stream().map(ship -> ship.MakeShipDTO()).collect(Collectors.toList()));
+        dto.put("salvoes",gpr.getSalvoSet().stream().map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
 
         return dto;
     }
