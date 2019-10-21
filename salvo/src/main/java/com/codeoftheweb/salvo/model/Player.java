@@ -20,10 +20,10 @@ public class Player {
     private String email;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<GamePlayer> setGamePlayer;
+    Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<Score> scoreSet;
+    Set<Score> scores;
 
     public Player() {
     }
@@ -49,12 +49,12 @@ public class Player {
         return email;
     }
 
-    public Set<GamePlayer> getSetGamePlayer() {
-        return setGamePlayer;
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
 
-    public Set<Score> getScoreSet() {
-        return scoreSet;
+    public Set<Score> getScores() {
+        return scores;
     }
 
     public Map<String,Object> makePlayerDTO(){

@@ -30,7 +30,7 @@ public class GamePlayer {
     Set<Ship> ships;
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
-    Set<Salvo> salvoSet;
+    Set<Salvo> salvos;
 
     public GamePlayer() {
     }
@@ -61,8 +61,8 @@ public class GamePlayer {
         return ships;
     }
 
-    public Set<Salvo> getSalvoSet() {
-        return salvoSet;
+    public Set<Salvo> getSalvos() {
+        return salvos;
     }
 
     public Map<String,Object> MakeGamePlayerDTO(){
@@ -77,7 +77,7 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("player",this.getPlayer().getUserName());
         dto.put("games",this.getGame().MakeGameDTO());
-        dto.put("scores",this.getGame().getScoreSet().stream().map(score -> score.makeScoreDTO()).collect(Collectors.toList()));
+        dto.put("scores",this.getGame().getScores().stream().map(score -> score.makeScoreDTO()).collect(Collectors.toList()));
 
         return dto;
     }

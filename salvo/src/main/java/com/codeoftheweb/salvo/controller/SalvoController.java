@@ -45,9 +45,9 @@ public class SalvoController {
         GamePlayer gpr = gamePlayerRepository.findById(gp).get();
         dto.put("id",gpr.getGame().getId());
         dto.put("created",gpr.getGame().getCreationDate());
-        dto.put("gamePlayers",gpr.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
+        dto.put("gamePlayers",gpr.getGame().getGamePlayers().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
         dto.put("ships",gpr.getShips().stream().map(ship -> ship.MakeShipDTO()).collect(Collectors.toList()));
-        dto.put("salvoes",gpr.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.getSalvoSet()).flatMap(salvos -> salvos.stream()).map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
+        dto.put("salvoes",gpr.getGame().getGamePlayers().stream().map(gamePlayer -> gamePlayer.getSalvos()).flatMap(salvos -> salvos.stream()).map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
 
         return dto;
     }
