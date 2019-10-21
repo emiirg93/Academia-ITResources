@@ -5,6 +5,7 @@ import com.codeoftheweb.salvo.model.GamePlayer;
 import com.codeoftheweb.salvo.repository.GamePlayerRepository;
 import com.codeoftheweb.salvo.repository.GameRepository;
 import com.codeoftheweb.salvo.repository.PlayerRepository;
+import com.codeoftheweb.salvo.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,22 @@ import java.util.stream.Collectors;
 public class SalvoController {
     @Autowired
     private GameRepository gameRepository;
+
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
+
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private ScoreRepository scoreRepository;
+
     @RequestMapping("/games")
-    public List<Map<String,Object>> getGames(){
-        return gameRepository.findAll().stream().map(game -> game.MakeGameDTO()).collect(Collectors.toList());
+    public Map<String, Object> getGames(){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("player","Guest");
+        dto.put("games",gameRepository.findAll().stream().map(game -> game.MakeGameDTO()).collect(Collectors.toList()));
+        return dto;
     }
 
     @RequestMapping("/game_view/{gp}")

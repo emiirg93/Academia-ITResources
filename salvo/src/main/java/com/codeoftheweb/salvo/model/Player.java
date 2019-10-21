@@ -15,10 +15,15 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
+    private String userName;
+
     private String email;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> setGamePlayer;
+
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<Score> scoreSet;
 
     public Player() {
     }
@@ -27,28 +32,29 @@ public class Player {
         this.email = email;
     }
 
+    public Player(String userName, String email) {
+        this.userName = userName;
+        this.email = email;
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getUserName() {
+        return userName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Set<GamePlayer> getSetGamePlayer() {
         return setGamePlayer;
     }
 
-    public void setSetGamePlayer(Set<GamePlayer> setGamePlayer) {
-        this.setGamePlayer = setGamePlayer;
+    public Set<Score> getScoreSet() {
+        return scoreSet;
     }
 
     public Map<String,Object> makePlayerDTO(){

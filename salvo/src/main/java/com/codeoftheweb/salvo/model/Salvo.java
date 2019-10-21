@@ -38,35 +38,19 @@ public class Salvo {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public GamePlayer getGamePlayer() {
         return gamePlayer;
-    }
-
-    public void setGamePlayer(GamePlayer gamePlayer) {
-        this.gamePlayer = gamePlayer;
     }
 
     public int getTurn() {
         return turn;
     }
 
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
-
     public List<String> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<String> locations) {
-        this.locations = locations;
-    }
-
-    public static List<String> ApplicationLocations (String a,String b){
+    public static List<String> ApplicationLocations (String a, String b){
         List<String> locations = new ArrayList<>();
         locations.add(a);
         locations.add(b);

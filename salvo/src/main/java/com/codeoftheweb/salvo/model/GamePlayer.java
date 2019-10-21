@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
@@ -44,54 +45,39 @@ public class GamePlayer {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Game getGame() {
         return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public LocalDateTime getJoinDate() {
         return joinDate;
-    }
-
-    public void setJoinDate(LocalDateTime joinDate) {
-        this.joinDate = joinDate;
     }
 
     public Set<Ship> getShips() {
         return ships;
     }
 
-    public void setShips(Set<Ship> ships) {
-        this.ships = ships;
-    }
-
     public Set<Salvo> getSalvoSet() {
         return salvoSet;
-    }
-
-    public void setSalvoSet(Set<Salvo> salvoSet) {
-        this.salvoSet = salvoSet;
     }
 
     public Map<String,Object> MakeGamePlayerDTO(){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",this.getId());
         dto.put("player",this.getPlayer().makePlayerDTO());
+
+        return dto;
+    }
+
+    public Map<String,Object> makeScoreDTO2(){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("player",this.getPlayer().getUserName());
+        dto.put("games",this.getGame().MakeGameDTO());
+        dto.put("scores",this.getGame().getScoreSet().stream().map(score -> score.makeScoreDTO()).collect(Collectors.toList()));
 
         return dto;
     }
