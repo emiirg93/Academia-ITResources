@@ -38,7 +38,7 @@ public class SalvoController {
         dto.put("created",gpr.getGame().getCreationDate());
         dto.put("gamePlayers",gpr.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
         dto.put("ships",gpr.getShips().stream().map(ship -> ship.MakeShipDTO()).collect(Collectors.toList()));
-        dto.put("salvoes",gpr.getSalvoSet().stream().map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
+        dto.put("salvoes",gpr.getGame().getSetGamePlayer().stream().map(gamePlayer -> gamePlayer.getSalvoSet()).flatMap(salvos -> salvos.stream()).map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
 
         return dto;
     }
