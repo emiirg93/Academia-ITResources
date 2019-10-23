@@ -52,6 +52,7 @@ public class SalvoApplication extends SpringBootServletInitializer {
 			Player player3 = playerRepository.save(new Player("t.almeida@ctu.gov",passwordEncoder().encode("mole")));
 			Player player4 = playerRepository.save(new Player("d.palmer@whitehouse.gov",passwordEncoder().encode("1234")));
 			Player player5 = playerRepository.save(new Player("kim_bauer@itresources.gov",passwordEncoder().encode("kb")));
+			Player player6 = playerRepository.save(new Player("admin@itr.com",passwordEncoder().encode("37904")));
 
 
 
@@ -172,8 +173,13 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 		auth.userDetailsService(inputEmail-> {
 			Player player = playerRepository.findByEmail(inputEmail);
 			if (player != null) {
-				return new User(player.getEmail(), player.getPassword(),
-						AuthorityUtils.createAuthorityList("USER"));
+				if(player.getEmail() == "admin@itr.com"){
+					return new User(player.getEmail(), player.getPassword(),
+							AuthorityUtils.createAuthorityList("ADMIN"));
+				}else{
+					return new User(player.getEmail(), player.getPassword(),
+							AuthorityUtils.createAuthorityList("USER"));
+				}
 			} else {
 				throw new UsernameNotFoundException("Unknown user: " + inputEmail);
 			}
@@ -192,8 +198,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/web/**").permitAll()
 				.antMatchers("/api/games").permitAll()
-				.antMatchers("/api/players").permitAll()
-				.antMatchers("/**").hasAuthority("USER")
+				.antMatchers("/h2-console/**").hasAuthority("ADMIN")
+				.antMatchers("/**").hasAuthority("ADMIN")
                 .and()
                 .formLogin();
 
@@ -204,6 +210,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout().logoutUrl("/api/logout");
         http.csrf().disable();
+        http.headers().frameOptions().disable(); // linea para activar la h2-console
 
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));

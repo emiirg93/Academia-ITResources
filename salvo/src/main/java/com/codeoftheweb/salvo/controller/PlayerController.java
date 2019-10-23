@@ -36,4 +36,6 @@ public class PlayerController {
         playerRepository.save(new Player(email, passwordEncoder.encode(password)));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+
 }
