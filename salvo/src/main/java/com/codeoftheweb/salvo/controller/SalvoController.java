@@ -1,14 +1,18 @@
 package com.codeoftheweb.salvo.controller;
 
-import com.codeoftheweb.salvo.model.Game;
+
 import com.codeoftheweb.salvo.model.GamePlayer;
+import com.codeoftheweb.salvo.model.Player;
 import com.codeoftheweb.salvo.repository.GamePlayerRepository;
 import com.codeoftheweb.salvo.repository.GameRepository;
 import com.codeoftheweb.salvo.repository.PlayerRepository;
 import com.codeoftheweb.salvo.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
@@ -32,9 +36,15 @@ public class SalvoController {
     private ScoreRepository scoreRepository;
 
     @RequestMapping("/games")
-    public Map<String, Object> getGames(){
+    public Map<String, Object> getGames(Authentication authentication){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("player","Guest");
+
+        if(isGuest(authentication)){
+            dto.put("player","Guest");
+        }else{
+            dto.put("player",playerRepository.findByEmail(authentication.getName()).makePlayerDTO());
+        }
+
         dto.put("games",gameRepository.findAll().stream().map(game -> game.MakeGameDTO()).collect(Collectors.toList()));
         return dto;
     }
@@ -50,5 +60,9 @@ public class SalvoController {
         dto.put("salvoes",gpr.getGame().getGamePlayers().stream().map(gamePlayer -> gamePlayer.getSalvos()).flatMap(salvos -> salvos.stream()).map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
 
         return dto;
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 }
