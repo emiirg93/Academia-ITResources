@@ -69,18 +69,7 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",this.getId());
         dto.put("player",this.getPlayer().makePlayerDTO());
-
         return dto;
     }
-
-    public Map<String,Object> makeScoreDTO2(){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("player",this.getPlayer().getEmail());
-        dto.put("games",this.getGame().MakeGameDTO());
-        dto.put("scores",this.getGame().getScores().stream().map(score -> score.makeScoreDTO()).collect(Collectors.toList()));
-
-        return dto;
-    }
-
 
 }
