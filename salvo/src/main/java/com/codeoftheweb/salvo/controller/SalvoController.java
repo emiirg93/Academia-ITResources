@@ -47,7 +47,6 @@ public class SalvoController {
             if(player != null){
                 if(game.getGamePlayers().size() < 2){
                     retorno = new ResponseEntity<>(makeMap("gpid",JoinGame(player,game)),HttpStatus.CREATED);
-//                    retorno = new ResponseEntity<>(makeMap("gpid",gamePlayer.getGame().getGamePlayers().size()),HttpStatus.CREATED);
                 }else{
                     retorno = new ResponseEntity<>(makeMap("error", "El juego esta lleno."), HttpStatus.FORBIDDEN);
                 }
