@@ -4,10 +4,8 @@ package com.codeoftheweb.salvo.controller;
 import com.codeoftheweb.salvo.model.Game;
 import com.codeoftheweb.salvo.model.GamePlayer;
 import com.codeoftheweb.salvo.model.Player;
-import com.codeoftheweb.salvo.repository.GamePlayerRepository;
-import com.codeoftheweb.salvo.repository.GameRepository;
-import com.codeoftheweb.salvo.repository.PlayerRepository;
-import com.codeoftheweb.salvo.repository.ScoreRepository;
+import com.codeoftheweb.salvo.model.Ship;
+import com.codeoftheweb.salvo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,13 +34,16 @@ public class SalvoController {
     @Autowired
     private ScoreRepository scoreRepository;
 
+    @Autowired
+    private ShipRepository shipRepository;
+
     @RequestMapping("/game/{id}/players")
-    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id,Authentication authentication){
+    public ResponseEntity<Map<String, Object>> JoinGame(@PathVariable Long id,Authentication authentication){
 
         ResponseEntity<Map<String, Object>> retorno = null;
 
         Game game = gameRepository.getOne(id);
-        Player player = playerRepository.findByEmail(authentication.getName());
+        Player player = findPlayer(authentication);
 
         if(game != null){
             if(player != null){
@@ -62,7 +64,7 @@ public class SalvoController {
     }
 
     @RequestMapping("/games")
-    public Map<String, Object> getGames(Authentication authentication){
+    public Map<String, Object> GetGames(Authentication authentication){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
 
         if(isGuest(authentication)){
@@ -76,8 +78,8 @@ public class SalvoController {
     }
 
     @RequestMapping(path = "/games" , method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createGame(Authentication authentication){
-        Player player = playerRepository.findByEmail(authentication.getName());
+    public ResponseEntity<Map<String, Object>> CreateGame(Authentication authentication){
+        Player player = findPlayer(authentication);
         if(player != null){
             return new ResponseEntity<>(makeMap("gpid", createGame(player)), HttpStatus.OK);
         }
@@ -87,8 +89,8 @@ public class SalvoController {
     }
 
     @RequestMapping("/game_view/{gp}")
-    public ResponseEntity<Map<String, Object>> getGameView(@PathVariable Long gp, Authentication authentication){
-        Player player = playerRepository.findByEmail(authentication.getName());
+    public ResponseEntity<Map<String, Object>> GetGameView(@PathVariable Long gp, Authentication authentication){
+        Player player = findPlayer(authentication);
         GamePlayer gamePlayer = gamePlayerRepository.getOne(gp);
         if(gamePlayer.getPlayer().equals(player)){
             return  new ResponseEntity<>(makeMap(gp),HttpStatus.OK);
@@ -96,6 +98,38 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @RequestMapping("/games/players/{gp}/ships")
+    public ResponseEntity<Map<String, Object>> GetShipView(@PathVariable Long gp, Authentication authentication, @RequestBody List<Ship> listShips) {
+
+        ResponseEntity<Map<String, Object>> retorno = null;
+        Player player = findPlayer(authentication);
+        GamePlayer gamePlayer = findGamePlayer(gp);
+
+        if(player != null &&  gamePlayer != null && gamePlayer.getPlayer().equals(player)){
+
+            if(gamePlayer.getShips().size() == 0){
+                listShips.forEach(ship -> ship.setGamePlayer(gamePlayer));
+                listShips.forEach(ship -> shipRepository.save(ship));
+                retorno = new ResponseEntity<>(makeMap("OK", "Barcos colocados correctamente"), HttpStatus.CREATED);
+            }else {
+                retorno = new ResponseEntity<>(makeMap("error", "Ya coloco sus barcos"), HttpStatus.FORBIDDEN);
+            }
+
+        }else{
+            retorno = new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.UNAUTHORIZED);
+        }
+
+        return retorno;
+    }
+
+//    @RequestMapping(path = "/games/players/{gp}/ships", method = RequestMethod.POST)
+//    public ResponseEntity<Map<String, Object>> SetShipView(@PathVariable Long gp, Authentication authentication) {
+//
+//    }
+
+
+    /** FUNCIONES **/
 
     private Map<String, Object> makeMap(String key, Object value) {
         Map<String, Object> map = new HashMap<>();
@@ -121,6 +155,16 @@ public class SalvoController {
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
+
+    private Player findPlayer(Authentication authentication){
+        Player player = playerRepository.findByEmail(authentication.getName());
+        return player;
+    }
+
+    private GamePlayer findGamePlayer(Long id){
+        GamePlayer gamePlayer = gamePlayerRepository.getOne(id);
+        return gamePlayer;
     }
 
     private Long createGame(Player player){
