@@ -196,13 +196,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
+				.antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/web/**").permitAll()
-				.antMatchers("/api/game/**").hasAuthority("USER")
 				.antMatchers("/api/games/**").permitAll()
-                .antMatchers("/api/players").permitAll()
-                .antMatchers("/api/game_view/*").hasAuthority("USER")
-				.antMatchers("/h2-console/**").hasAuthority("ADMIN")
-				.antMatchers("/**").hasAuthority("ADMIN")
+				.antMatchers("/api/players/**").permitAll()
+				.antMatchers("/api/player/**").hasAuthority("USER")
+				.antMatchers("/api/game/**").hasAuthority("USER")
+				.antMatchers("/api/game_view/**").hasAuthority("USER")
+				.antMatchers("/api/**").hasAuthority("ADMIN")
                 .and()
                 .formLogin();
 

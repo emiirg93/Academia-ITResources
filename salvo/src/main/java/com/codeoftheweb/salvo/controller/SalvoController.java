@@ -1,10 +1,7 @@
 package com.codeoftheweb.salvo.controller;
 
 
-import com.codeoftheweb.salvo.model.Game;
-import com.codeoftheweb.salvo.model.GamePlayer;
-import com.codeoftheweb.salvo.model.Player;
-import com.codeoftheweb.salvo.model.Ship;
+import com.codeoftheweb.salvo.model.*;
 import com.codeoftheweb.salvo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +33,30 @@ public class SalvoController {
 
     @Autowired
     private ShipRepository shipRepository;
+
+    @Autowired
+    private SalvoRepository salvoRepository;
+
+    @RequestMapping("games/players/{gpid}/salvos")
+    public ResponseEntity<Map<String, Object>> SetSalvoes(@PathVariable Long gpid ,Authentication authentication, @RequestBody Salvo salvo){
+        ResponseEntity<Map<String, Object>> retorno = null;
+
+        Player player = findPlayer(authentication);
+        GamePlayer gamePlayer = findGamePlayer(gpid);
+
+        if(Authorized(player,gamePlayer)){
+            if(gamePlayer.getSalvos().size() < salvo.getTurn()) {
+                salvoRepository.save(new Salvo(gamePlayer,salvo.getTurn(),salvo.getLocations()));
+                retorno = new ResponseEntity<>(makeMap("OK", "Salvo guardado"), HttpStatus.CREATED);
+            }else{
+                retorno = new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.FORBIDDEN);
+            }
+        }else{
+            retorno = new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.UNAUTHORIZED);
+        }
+
+        return retorno;
+    }
 
     @RequestMapping("/game/{id}/players")
     public ResponseEntity<Map<String, Object>> JoinGame(@PathVariable Long id,Authentication authentication){
@@ -91,12 +112,17 @@ public class SalvoController {
     @RequestMapping("/game_view/{gp}")
     public ResponseEntity<Map<String, Object>> GetGameView(@PathVariable Long gp, Authentication authentication){
         Player player = findPlayer(authentication);
-        GamePlayer gamePlayer = gamePlayerRepository.getOne(gp);
-        if(gamePlayer.getPlayer().equals(player)){
-            return  new ResponseEntity<>(makeMap(gp),HttpStatus.OK);
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gp).orElse(null);
+        if(gamePlayer != null){
+            if(gamePlayer.getPlayer().equals(player)){
+                return  new ResponseEntity<>(makeMap(gp),HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.UNAUTHORIZED);
+            }
         }else{
             return new ResponseEntity<>(makeMap("error", "No esta autorizado."), HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @RequestMapping("/games/players/{gp}/ships")
@@ -106,11 +132,13 @@ public class SalvoController {
         Player player = findPlayer(authentication);
         GamePlayer gamePlayer = findGamePlayer(gp);
 
-        if(player != null &&  gamePlayer != null && gamePlayer.getPlayer().equals(player)){
+        if(Authorized(player,gamePlayer)){
 
             if(gamePlayer.getShips().size() == 0){
                 listShips.forEach(ship -> ship.setGamePlayer(gamePlayer));
                 listShips.forEach(ship -> shipRepository.save(ship));
+                gamePlayer.getGame().setGameState("WAITINGFOROPP");
+                gameRepository.save(gamePlayer.getGame());
                 retorno = new ResponseEntity<>(makeMap("OK", "Barcos colocados correctamente"), HttpStatus.CREATED);
             }else {
                 retorno = new ResponseEntity<>(makeMap("error", "Ya coloco sus barcos"), HttpStatus.FORBIDDEN);
@@ -145,7 +173,12 @@ public class SalvoController {
         GamePlayer gpr = gamePlayerRepository.findById(gp).get();
         dto.put("id",gpr.getGame().getId());
         dto.put("created",gpr.getGame().getCreationDate());
-        dto.put("gameState","PLACESHIPS");
+        if(gpr.getGame().getGameState() == null){
+            dto.put("gameState", "PLACESHIPS");
+        }else{
+            dto.put("gameState",gpr.getGame().getGameState());
+        }
+
         dto.put("gamePlayers",gpr.getGame().getGamePlayers().stream().map(gamePlayer -> gamePlayer.MakeGamePlayerDTO()).collect(Collectors.toList()));
         dto.put("ships",gpr.getShips().stream().map(ship -> ship.MakeShipDTO()).collect(Collectors.toList()));
         dto.put("salvoes",gpr.getGame().getGamePlayers().stream().map(gamePlayer -> gamePlayer.getSalvos()).flatMap(salvos -> salvos.stream()).map(salvo -> salvo.makeSalvoDTO()).collect(Collectors.toList()));
@@ -181,5 +214,15 @@ public class SalvoController {
     public Long JoinGame(Player player, Game game){
         GamePlayer gp = gamePlayerRepository.save(new GamePlayer(game,player,game.getCreationDate()));
         return gp.getId();
+    }
+
+    public Boolean Authorized(Player player, GamePlayer gamePlayer){
+        boolean authorized = false;
+
+        if(player != null &&  gamePlayer != null && gamePlayer.getPlayer().equals(player)){
+            authorized = true;
+        }
+
+        return authorized;
     }
 }

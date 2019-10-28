@@ -21,6 +21,8 @@ public class Game {
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<Score> scores;
 
+    private String gameState;
+
     public Game() {
     }
 
@@ -44,10 +46,19 @@ public class Game {
         return scores;
     }
 
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
+    }
+
     public Map<String,Object> MakeGameDTO(){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",this.getId());
         dto.put("created",this.getCreationDate());
+
         dto.put("gamePlayers",this.getGamePlayers()
                 .stream()
                 .map(gamePlayer -> gamePlayer.MakeGamePlayerDTO())

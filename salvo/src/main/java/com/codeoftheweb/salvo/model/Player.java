@@ -62,6 +62,10 @@ public class Player {
         return scores;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Map<String,Object> makePlayerDTO(){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",this.getId());
