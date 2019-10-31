@@ -22,6 +22,8 @@ public class Ship {
     @Column(name="locations")
     private List<String> locations;
 
+    private int damage;
+
     public Ship() {
     }
 
@@ -29,6 +31,14 @@ public class Ship {
         this.type = type;
         this.gamePlayer = gamePlayer;
         this.locations = locations;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     public Long getId() {

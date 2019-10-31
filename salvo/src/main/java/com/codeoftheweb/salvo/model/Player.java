@@ -74,4 +74,17 @@ public class Player {
         return dto;
     }
 
+    public static Player GetOpponent(Game game, GamePlayer gamePlayerSelf) {
+        Player opponent = new Player();
+
+        for (GamePlayer gp :game.getGamePlayers()
+        ) {
+            if(gp.getId() != gamePlayerSelf.getId()){
+                opponent = gp.getPlayer();
+            }
+        }
+
+        return opponent;
+    }
+
 }

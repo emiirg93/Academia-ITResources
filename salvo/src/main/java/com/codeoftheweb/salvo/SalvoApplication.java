@@ -115,28 +115,28 @@ public class SalvoApplication extends SpringBootServletInitializer {
 			shipRepository.save(new Ship("Submarine",gp8,Ship.ApplicationLocations("A2","A3","A4")));
 			Ship s10 =shipRepository.save(new Ship("Patrol Boat",gp8,Ship.ApplicationLocations("G6","H6")));
 
-			Salvo salvo1 = salvoRepository.save(new Salvo(s1.getGamePlayer(),1,Salvo.ApplicationLocations("B5","C5","F1")));
-			Salvo salvo2 = salvoRepository.save(new Salvo(s2.getGamePlayer(),1,Salvo.ApplicationLocations("B4","B5","B6")));
+			Salvo salvo1 = salvoRepository.save(new Salvo(s1.getGamePlayer(), 1,Salvo.ApplicationLocations("B5","C5","F1")));
+			Salvo salvo2 = salvoRepository.save(new Salvo(s2.getGamePlayer(), 1,Salvo.ApplicationLocations("B4","B5","B6")));
 
-			Salvo salvo3 = salvoRepository.save(new Salvo(s1.getGamePlayer(),2,Salvo.ApplicationLocations("F2","D5")));
-			Salvo salvo4 = salvoRepository.save(new Salvo(s2.getGamePlayer(),2,Salvo.ApplicationLocations("E1","H3","A2")));
+			Salvo salvo3 = salvoRepository.save(new Salvo(s1.getGamePlayer(),  2,Salvo.ApplicationLocations("F2","D5")));
+			Salvo salvo4 = salvoRepository.save(new Salvo(s2.getGamePlayer(), 2,Salvo.ApplicationLocations("E1","H3","A2")));
 
-			Salvo salvo5 = salvoRepository.save(new Salvo(s3.getGamePlayer(),1,Salvo.ApplicationLocations("A2","A4","G6")));
-			Salvo salvo6 = salvoRepository.save(new Salvo(s4.getGamePlayer(),1,Salvo.ApplicationLocations("B5","D5","C7")));
+			Salvo salvo5 = salvoRepository.save(new Salvo(s3.getGamePlayer(),  1,Salvo.ApplicationLocations("A2","A4","G6")));
+			Salvo salvo6 = salvoRepository.save(new Salvo(s4.getGamePlayer(),  1,Salvo.ApplicationLocations("B5","D5","C7")));
 
-			Salvo salvo7 = salvoRepository.save(new Salvo(s3.getGamePlayer(),2,Salvo.ApplicationLocations("A3","H6")));
-			Salvo salvo8 = salvoRepository.save(new Salvo(s4.getGamePlayer(),2,Salvo.ApplicationLocations("C5","C6")));
+			Salvo salvo7 = salvoRepository.save(new Salvo(s3.getGamePlayer(),  2,Salvo.ApplicationLocations("A3","H6")));
+			Salvo salvo8 = salvoRepository.save(new Salvo(s4.getGamePlayer(),  2,Salvo.ApplicationLocations("C5","C6")));
 
-			Salvo salvo9 = salvoRepository.save(new Salvo(s5.getGamePlayer(),1,Salvo.ApplicationLocations("G6","H6","A4")));
-			Salvo salvo10 = salvoRepository.save(new Salvo(s6.getGamePlayer(),1,Salvo.ApplicationLocations("H1","H2","H3")));
+			Salvo salvo9 = salvoRepository.save(new Salvo(s5.getGamePlayer(),  1,Salvo.ApplicationLocations("G6","H6","A4")));
+			Salvo salvo10 = salvoRepository.save(new Salvo(s6.getGamePlayer(),  1,Salvo.ApplicationLocations("H1","H2","H3")));
 
-			Salvo salvo11 = salvoRepository.save(new Salvo(s5.getGamePlayer(),2,Salvo.ApplicationLocations("A2","A3","D8")));
-			Salvo salvo12 = salvoRepository.save(new Salvo(s6.getGamePlayer(),2,Salvo.ApplicationLocations("E1","F2","G3")));
+			Salvo salvo11 = salvoRepository.save(new Salvo(s5.getGamePlayer(),  2,Salvo.ApplicationLocations("A2","A3","D8")));
+			Salvo salvo12 = salvoRepository.save(new Salvo(s6.getGamePlayer(), 2,Salvo.ApplicationLocations("E1","F2","G3")));
 
-			Salvo salvo13 = salvoRepository.save(new Salvo(s7.getGamePlayer(),1,Salvo.ApplicationLocations("A3","A4","F7")));
-			Salvo salvo14 = salvoRepository.save(new Salvo(s8.getGamePlayer(),1,Salvo.ApplicationLocations("B5","C6","H1")));
+			Salvo salvo13 = salvoRepository.save(new Salvo(s7.getGamePlayer(),  1,Salvo.ApplicationLocations("A3","A4","F7")));
+			Salvo salvo14 = salvoRepository.save(new Salvo(s8.getGamePlayer(),  1,Salvo.ApplicationLocations("B5","C6","H1")));
 
-			Salvo salvo15 = salvoRepository.save(new Salvo(s7.getGamePlayer(),2,Salvo.ApplicationLocations("A2","G6","H6")));
+			Salvo salvo15 = salvoRepository.save(new Salvo(s7.getGamePlayer(),  2,Salvo.ApplicationLocations("A2","G6","H6")));
 			Salvo salvo16 = salvoRepository.save(new Salvo(s8.getGamePlayer(),2,Salvo.ApplicationLocations("C5","C7","D5")));
 
 			Salvo salvo17 = salvoRepository.save(new Salvo(s9.getGamePlayer(),1,Salvo.ApplicationLocations("A1","A2","A3")));
@@ -198,6 +198,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 				.antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/web/**").permitAll()
+				.antMatchers("/api/view/**").permitAll()
 				.antMatchers("/api/games/**").permitAll()
 				.antMatchers("/api/players/**").permitAll()
 				.antMatchers("/api/player/**").hasAuthority("USER")

@@ -3,10 +3,9 @@ package com.codeoftheweb.salvo.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -76,4 +75,16 @@ public class GamePlayer {
         return dto;
     }
 
+    public static GamePlayer GetGamePlayerOpp(Game game, GamePlayer gamePlayerSelf) {
+        GamePlayer GPopponent = null;
+
+        for (GamePlayer gp :game.getGamePlayers()
+        ) {
+            if(gp.getId() != gamePlayerSelf.getId()){
+                GPopponent = gp;
+            }
+        }
+
+        return GPopponent;
+    }
 }
