@@ -85,4 +85,14 @@ public class Ship {
 
         return dto;
     }
+
+    public static List<Ship> CreateListShip(Set<Ship> list){
+        List<Ship> newList = new ArrayList<>();
+
+        for (Ship o :list) {
+            newList.add(o);
+        }
+
+        return newList;
+    }
 }

@@ -21,7 +21,7 @@ public class Salvo {
 
     @ElementCollection
     @Column(name = "locations")
-    private List<String> locations;
+    private List<String> salvoLocations;
 
     public Salvo() {
     }
@@ -29,9 +29,16 @@ public class Salvo {
     public Salvo(GamePlayer gamePlayer, int turn, List<String> locations) {
         this.gamePlayer = gamePlayer;
         this.turn = turn;
-        this.locations = locations;
+        this.salvoLocations = locations;
     }
 
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    public List<String> getSalvoLocations() {
+        return salvoLocations;
+    }
 
     public Long getId() {
         return id;
@@ -45,9 +52,6 @@ public class Salvo {
         return turn;
     }
 
-    public List<String> getLocations() {
-        return locations;
-    }
 
     public static List<String> ApplicationLocations(String a, String b) {
         List<String> locations = new ArrayList<>();
@@ -70,7 +74,7 @@ public class Salvo {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("turn", this.getTurn());
         dto.put("player", this.getGamePlayer().getPlayer().getId());
-        dto.put("locations", this.getLocations());
+        dto.put("locations", this.getSalvoLocations());
 
         return dto;
     }
@@ -79,20 +83,13 @@ public class Salvo {
 
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         Salvo salvoOpponent = GetSalvoOpponent(GPOpponent, this.getTurn());
-        List<String> salvoLocations = new ArrayList<>();
-        List<Salvo> salvos = new ArrayList<>();
+        List<String> salvoLocations = CreateListSalvoLocations(salvoOpponent);
 
-        for (Salvo salvo : GPOpponent.getSalvos()) {
-            salvos.add(salvo);
-        }
-
-        for (String location : salvoOpponent.getLocations()) {
-            salvoLocations.add(location);
-        }
+        List<Salvo> salvos = CreateListSalvo(GPOpponent.getSalvos());
 
         dto.put("turn", this.getTurn());
         dto.put("hitLocations", HitsLocations(GPOpponent, shipsSelf, this.getTurn()));
-        dto.put("damages", MakeDamages(salvoLocations, shipsSelf, salvos, this.getTurn()));
+        dto.put("damages", MakeDamages(salvoLocations, shipsSelf, salvos));
         dto.put("missed", MakeMissed(GPOpponent, shipsSelf, this.getTurn(), salvoOpponent));
         return dto;
 
@@ -108,7 +105,7 @@ public class Salvo {
 
             for (String locationShip : ship.getLocations()) {
 
-                for (String salvoLocations : salvoOpponent.getLocations()) {
+                for (String salvoLocations : salvoOpponent.getSalvoLocations()) {
                     if (locationShip.equals(salvoLocations)) {
                         hitsLocations.add(salvoLocations);
                     }
@@ -125,7 +122,7 @@ public class Salvo {
         return salvoOpponent;
     }
 
-    public Map<String, Object> MakeDamages(List<String> salvoLocation, List<Ship> shipsSelf, List<Salvo> salvos, int turn) {
+    public Map<String, Object> MakeDamages(List<String> salvoLocation, List<Ship> shipsSelf, List<Salvo> salvos) {
         int carrierHits = 0, battleshipHits = 0, submarineHits = 0, destroyerHits = 0, patrolboatHits = 0;
 
         for (Ship ship : shipsSelf) {
@@ -136,7 +133,7 @@ public class Salvo {
                             case "carrier":
                                 carrierHits += 1;
                                 break;
-                            case "battle":
+                            case "battleship":
                                 battleshipHits += 1;
                                 break;
                             case "submarine":
@@ -145,7 +142,7 @@ public class Salvo {
                             case "destroyer":
                                 destroyerHits += 1;
                                 break;
-                            case "patrol boat":
+                            case "patrolboat":
                                 patrolboatHits += 1;
                                 break;
                         }
@@ -156,7 +153,7 @@ public class Salvo {
         }
 
         salvos.sort((o1, o2) -> o1.getTurn() - o2.getTurn());
-        Map<String, Object> mapAccumulate = accumulateShipsHits(shipsSelf, salvos, turn);
+        Map<String, Object> mapAccumulate = accumulateShipsHits(shipsSelf, salvos);
 
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("carrierHits", carrierHits);
@@ -169,7 +166,7 @@ public class Salvo {
         dto.put("battleship", mapAccumulate.get("battleship"));
         dto.put("submarine", mapAccumulate.get("submarine"));
         dto.put("destroyer", mapAccumulate.get("destroyer"));
-        dto.put("patrol boat", mapAccumulate.get("patrol boat"));
+        dto.put("patrolboat", mapAccumulate.get("patrolboat"));
 
         return dto;
     }
@@ -178,45 +175,42 @@ public class Salvo {
         int missed = 0;
         List<String> hits = HitsLocations(gamePlayerOpp, shipsSelf, turn);
 
-        if (hits.size() < salvo.getLocations().size()) {
-            missed = salvo.getLocations().size() - hits.size();
+        if (hits.size() < salvo.getSalvoLocations().size()) {
+            missed = salvo.getSalvoLocations().size() - hits.size();
         }
 
         return missed;
     }
 
-    public Map<String, Object> accumulateShipsHits(List<Ship> ships, List<Salvo> salvos, int turn) {
+    public static Map<String, Object> accumulateShipsHits(List<Ship> ships, List<Salvo> salvos) {
         int carrier = 0, battleship = 0, submarine = 0, destroyer = 0, patrolboat = 0;
 
         for (Salvo salvo : salvos) {
-            if (salvo.getTurn() <= turn) {
-                for (Ship ship : ships) {
-                    for (String salvoLocation : salvo.getLocations()) {
-                        for (String shipLocation : ship.getLocations()) {
-                            if (shipLocation.equals(salvoLocation)) {
-                                switch (ship.getType().toLowerCase()) {
-                                    case "carrier":
-                                        carrier += 1;
-                                        break;
-                                    case "battleship":
-                                        battleship += 1;
-                                        break;
-                                    case "submarine":
-                                        submarine += 1;
-                                        break;
-                                    case "destroyer":
-                                        destroyer += 1;
-                                        break;
-                                    case "patrol boat":
-                                        patrolboat += 1;
-                                        break;
-                                }
+            for (Ship ship : ships) {
+                for (String salvoLocation : salvo.getSalvoLocations()) {
+                    for (String shipLocation : ship.getLocations()) {
+                        if (shipLocation.equals(salvoLocation)) {
+                            switch (ship.getType().toLowerCase()) {
+                                case "carrier":
+                                    carrier += 1;
+                                    break;
+                                case "battleship":
+                                    battleship += 1;
+                                    break;
+                                case "submarine":
+                                    submarine += 1;
+                                    break;
+                                case "destroyer":
+                                    destroyer += 1;
+                                    break;
+                                case "patrolboat":
+                                    patrolboat += 1;
+                                    break;
                             }
                         }
                     }
                 }
-            } else
-                break;
+            }
         }
 
 
@@ -226,8 +220,28 @@ public class Salvo {
         dto.put("battleship", battleship);
         dto.put("submarine", submarine);
         dto.put("destroyer", destroyer);
-        dto.put("patrol boat", patrolboat);
+        dto.put("patrolboat", patrolboat);
 
         return dto;
+    }
+
+    public static List<Salvo> CreateListSalvo(Set<Salvo> list) {
+        List<Salvo> newList = new ArrayList<>();
+
+        for (Salvo o : list) {
+            newList.add(o);
+        }
+
+        return newList;
+    }
+
+    public static List<String> CreateListSalvoLocations(Salvo salvo) {
+        List<String> locations = new ArrayList<>();
+
+        for (String location : salvo.getSalvoLocations()) {
+            locations.add(location);
+        }
+
+        return locations;
     }
 }

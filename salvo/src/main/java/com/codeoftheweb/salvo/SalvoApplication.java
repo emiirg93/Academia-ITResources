@@ -89,31 +89,31 @@ public class SalvoApplication extends SpringBootServletInitializer {
 			Ship s1 = shipRepository.save(new Ship("Patrol Boat",gp1,Ship.ApplicationLocations("B4","B5")));
 
 			shipRepository.save(new Ship("Destroyer",gp2,Ship.ApplicationLocations("B5","C5","D5")));
-			Ship s2 =shipRepository.save(new Ship("Patrol Boat",gp2,Ship.ApplicationLocations("F1","F2")));
+			Ship s2 =shipRepository.save(new Ship("PatrolBoat",gp2,Ship.ApplicationLocations("F1","F2")));
 
 			shipRepository.save(new Ship("Destroyer",gp3,Ship.ApplicationLocations("B5","C5","D5")));
-			Ship s3 =shipRepository.save(new Ship("Patrol Boat",gp3,Ship.ApplicationLocations("C6","C7")));
+			Ship s3 =shipRepository.save(new Ship("PatrolBoat",gp3,Ship.ApplicationLocations("C6","C7")));
 
 			shipRepository.save(new Ship("Submarine",gp4,Ship.ApplicationLocations("A2","A3","A4")));
-			Ship s4 =shipRepository.save(new Ship("Patrol Boat",gp4,Ship.ApplicationLocations("G6","H6")));
+			Ship s4 =shipRepository.save(new Ship("PatrolBoat",gp4,Ship.ApplicationLocations("G6","H6")));
 
 			shipRepository.save(new Ship("Destroyer",gp5,Ship.ApplicationLocations("B5","C5","D5")));
-			Ship s5 =shipRepository.save(new Ship("Patrol Boat",gp5,Ship.ApplicationLocations("C6","C7")));
+			Ship s5 =shipRepository.save(new Ship("PatrolBoat",gp5,Ship.ApplicationLocations("C6","C7")));
 
 			shipRepository.save(new Ship("Submarine",gp6,Ship.ApplicationLocations("A2","A3","A4")));
-			Ship s6 =shipRepository.save(new Ship("Patrol Boat",gp6,Ship.ApplicationLocations("G6","H6")));
+			Ship s6 =shipRepository.save(new Ship("PatrolBoat",gp6,Ship.ApplicationLocations("G6","H6")));
 
 			shipRepository.save(new Ship("Destroyer",gp7,Ship.ApplicationLocations("B5","C5","D5")));
-			Ship s7 =shipRepository.save(new Ship("Patrol Boat",gp7,Ship.ApplicationLocations("C6","C7")));
+			Ship s7 =shipRepository.save(new Ship("PatrolBoat",gp7,Ship.ApplicationLocations("C6","C7")));
 
 			shipRepository.save(new Ship("Submarine",gp8,Ship.ApplicationLocations("A2","A3","A4")));
-			Ship s8 =shipRepository.save(new Ship("Patrol Boat",gp8,Ship.ApplicationLocations("G6","H6")));
+			Ship s8 =shipRepository.save(new Ship("PatrolBoat",gp8,Ship.ApplicationLocations("G6","H6")));
 
 			shipRepository.save(new Ship("Destroyer",gp9,Ship.ApplicationLocations("B5","C5","D5")));
-			Ship s9 =shipRepository.save(new Ship("Patrol Boat",gp9,Ship.ApplicationLocations("C6","C7")));
+			Ship s9 =shipRepository.save(new Ship("PatrolBoat",gp9,Ship.ApplicationLocations("C6","C7")));
 
 			shipRepository.save(new Ship("Submarine",gp8,Ship.ApplicationLocations("A2","A3","A4")));
-			Ship s10 =shipRepository.save(new Ship("Patrol Boat",gp8,Ship.ApplicationLocations("G6","H6")));
+			Ship s10 =shipRepository.save(new Ship("PatrolBoat",gp8,Ship.ApplicationLocations("G6","H6")));
 
 			Salvo salvo1 = salvoRepository.save(new Salvo(s1.getGamePlayer(), 1,Salvo.ApplicationLocations("B5","C5","F1")));
 			Salvo salvo2 = salvoRepository.save(new Salvo(s2.getGamePlayer(), 1,Salvo.ApplicationLocations("B4","B5","B6")));

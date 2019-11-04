@@ -53,7 +53,7 @@ function makePostUrl() {
 
 function makePostUrlSalvoes() {
     var gamePlayerID =  getParameterByName("gp");
-    return '/api/games/players/' + gamePlayerID + '/salvoes';
+    return '/api/games/players/' + gamePlayerID + '/salvos';
 }
 
 function refreshGameView(_url) {
