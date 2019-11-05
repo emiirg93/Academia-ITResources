@@ -110,7 +110,7 @@ function refreshGameView(_url) {
                 $('#gameRecordBlock').show('puff', 'slow');
                 console.log("TIED MATCH");
             }
-            if (gamePlayerData.gameState === "LOST"){
+            if (gamePlayerData.gameState === "LOSE"){
                 showSelf(gamePlayerData);
                 makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
                 makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
