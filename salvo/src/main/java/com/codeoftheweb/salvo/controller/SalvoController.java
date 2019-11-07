@@ -289,7 +289,7 @@ public class SalvoController {
 
         if (gp1.getShips() != null && gp1.getShips().size() > 0) {
             state = "WAITINGFOROPP";
-            if (gp2 != null && gp2.getShips() != null) {
+            if (gp2 != null && gp2.getShips() != null && gp2.getShips().size() > 0) {
                 state = "PLAY";
                 if (gp1.getSalvos() != null && gp1.getSalvos().size() > 0) {
                     state = "WAIT";
@@ -299,27 +299,24 @@ public class SalvoController {
                             state = "PLAY";
                             if (gp1.getSalvos().size() == gp2.getSalvos().size()) {
 
-                                if (SunkAll(gp1)) {
+                                if (SunkAll(gp1) && SunkAll(gp2)) {
+                                    state = "TIE";
+                                    if(CreateScore(game)){
+                                        scoreRepository.save(new Score(game, gp1.getPlayer(), 0.5, LocalDateTime.now()));
+                                        scoreRepository.save(new Score(game, gp2.getPlayer(), 0.5, LocalDateTime.now()));
+                                    }
+                                } else if (SunkAll(gp1)) {
                                     state = "LOSE";
-                                    if (CreateScore(game)) {
+                                    if(CreateScore(game)) {
                                         scoreRepository.save(new Score(game, gp1.getPlayer(), 0.0, LocalDateTime.now()));
                                         scoreRepository.save(new Score(game, gp2.getPlayer(), 1.0, LocalDateTime.now()));
                                     }
-                                    if (SunkAll(gp2)) {
-                                        state = "TIE";
-                                        if (CreateScore(game)) {
-                                            scoreRepository.save(new Score(game, gp1.getPlayer(), 0.5, LocalDateTime.now()));
-                                            scoreRepository.save(new Score(game, gp2.getPlayer(), 0.5, LocalDateTime.now()));
-                                        }
-
-                                    }
-                                } else if (SunkAll(gp2)) {
-                                    state = "WIN";
-                                    if (CreateScore(game)) {
+                                } else if (SunkAll(gp2)){
+                                    state = "WON";
+                                    if(CreateScore(game)) {
                                         scoreRepository.save(new Score(game, gp1.getPlayer(), 1.0, LocalDateTime.now()));
                                         scoreRepository.save(new Score(game, gp2.getPlayer(), 0.0, LocalDateTime.now()));
                                     }
-
                                 }
                             }
                         }
